@@ -21,7 +21,7 @@ def add_tag_after_heading(doc, heading, tag, filename):
         tag_added_files[filename].append(tag)
 
 def export_to_excel(tag_added_files):
-    writer = pd.ExcelWriter('Tag_Added_Report.xlsx', engine='openpyxl')
+    writer = pd.ExcelWriter(os.path.join(output_folder, 'Tag_Added_Report.xlsx'), engine='openpyxl')
     for filename in os.listdir(input_folder):
         data = {"Heading": headings, "Tag Added": []}
         for heading in headings:
