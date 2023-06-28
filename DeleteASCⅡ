@@ -1,0 +1,29 @@
+Sub RemoveASCII()
+    ' User-selected range
+    Dim rng As Range
+    Set rng = Application.Selection
+
+    ' Variable for cell
+    Dim cell As Range
+    
+    ' Loop over each cell in the user-selected range
+    For Each cell In rng
+        ' Remove all ASCII characters
+        cell.Value = RemoveASCIICharacters(cell.Value)
+    Next cell
+End Sub
+
+Function RemoveASCIICharacters(inputStr As String) As String
+    Dim i As Integer
+    Dim outputStr As String
+    outputStr = inputStr
+    
+    For i = 1 To Len(inputStr)
+        ' ASCII range from 0 to 127
+        If Asc(Mid(inputStr, i, 1)) >= 0 And Asc(Mid(inputStr, i, 1)) <= 127 Then
+            outputStr = Replace(outputStr, Mid(inputStr, i, 1), "")
+        End If
+    Next i
+
+    RemoveASCIICharacters = outputStr
+End Function
