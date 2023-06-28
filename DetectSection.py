@@ -7,7 +7,7 @@ def extract_headings_from_docx(docx_path):
     document = Document(docx_path)
     headings = []
     for paragraph in document.paragraphs:
-        if paragraph.style.name.startswith('Heading'):
+        if paragraph.style.name.lower().startswith('heading'):  # Check for all heading levels
             headings.append(paragraph.text)
     return headings
 
@@ -38,3 +38,4 @@ if __name__ == '__main__':
     input_dir = '/path/to/your/input/folder'  # Change to your input folder
     output_dir = '/path/to/your/output/folder'  # Change to your output folder
     main(input_dir, output_dir)
+
