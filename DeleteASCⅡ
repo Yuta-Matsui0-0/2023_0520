@@ -1,29 +1,49 @@
-Sub RemoveASCII()
-    ' User-selected range
-    Dim rng As Range
-    Set rng = Application.Selection
+Option Explicit
 
-    ' Variable for cell
+Sub RemoveSpecifiedChars()
+    Dim InputWB As Workbook
+    Dim OutputWB As Workbook
+    Dim InputWS As Worksheet
+    Dim OutputWS As Worksheet
+    Dim rng As Range
     Dim cell As Range
     
-    ' Loop over each cell in the user-selected range
-    For Each cell In rng
-        ' Remove all ASCII characters
-        cell.Value = RemoveASCIICharacters(cell.Value)
-    Next cell
+    ' Define your file path here
+    Dim InputFilePath As String
+    Dim OutputFilePath As String
+    InputFilePath = "C:\path\to\input\file.xlsx"
+    OutputFilePath = "C:\path\to\output\file.xlsx"
+    
+    ' Define the characters you want to remove here
+    Dim RemoveChars As String
+    RemoveChars = "!""#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
+    
+    ' Open the input and output files
+    Set InputWB = Workbooks.Open(InputFilePath)
+    Set OutputWB = Workbooks.Add
+    
+    ' Loop through each worksheet in the input workbook
+    For Each InputWS In InputWB.Worksheets
+        ' Add a new worksheet to the output workbook with the same name
+        Set OutputWS = OutputWB.Worksheets.Add
+        OutputWS.Name = InputWS.Name
+        
+        ' Loop through each cell in the input worksheet
+        For Each cell In InputWS.UsedRange
+            ' Copy the cell value to the output worksheet, removing undesired characters
+            OutputWS.Range(cell.Address).Value = RemoveCharacters(cell.Value, RemoveChars)
+        Next cell
+    Next InputWS
+    
+    ' Save the output workbook
+    OutputWB.SaveAs OutputFilePath
+    OutputWB.Close SaveChanges:=False
+    
+    ' Close the input workbook without saving
+    InputWB.Close SaveChanges:=False
+    
+    ' Notify the user that the operation is complete
+    MsgBox "Operation complete. The cleaned data has been saved to: " & OutputFilePath
 End Sub
 
-Function RemoveASCIICharacters(inputStr As String) As String
-    Dim i As Integer
-    Dim outputStr As String
-    outputStr = inputStr
-    
-    For i = 1 To Len(inputStr)
-        ' ASCII range from 0 to 127
-        If Asc(Mid(inputStr, i, 1)) >= 0 And Asc(Mid(inputStr, i, 1)) <= 127 Then
-            outputStr = Replace(outputStr, Mid(inputStr, i, 1), "")
-        End If
-    Next i
-
-    RemoveASCIICharacters = outputStr
-End Function
+' This function removes all occurrences of the characters in RemoveChars
